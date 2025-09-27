@@ -1,3 +1,4 @@
 name = "code-launch"
-compatibility_date = "2025-03-28"
+compatibility_date = "2024-09-02"
+compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "./build/client"
