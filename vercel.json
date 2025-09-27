@@ -4,6 +4,5 @@
       "NODE_OPTIONS": "--max-old-space-size=4096"
     }
   },
-  "buildCommand": "npm run build:vercel",
   "installCommand": "npm install --legacy-peer-deps"
 }

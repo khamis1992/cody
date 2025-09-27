@@ -1,10 +1,14 @@
 import { vitePlugin as remixVitePlugin } from '@remix-run/dev';
+import { installGlobals } from '@remix-run/node';
+import { vercelPreset } from '@vercel/remix/vite';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
+
+installGlobals();
 
 // Load environment variables from multiple files
 dotenv.config({ path: '.env.local' });
@@ -73,7 +77,7 @@ export default defineConfig((config) => {
           v3_throwAbortReason: true,
           v3_lazyRouteDiscovery: true,
         },
-        serverAdapter: '@remix-run/node', // Use Node.js adapter for Vercel
+        presets: [vercelPreset()],
       }),
       UnoCSS(),
       tsconfigPaths(),
