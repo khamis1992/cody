@@ -12,8 +12,8 @@
   },
   "scripts": {
     "deploy": "pnpm run build && wrangler pages deploy ./build/client",
-    "build": "remix vite:build --config vite.config.cloudflare.ts",
-    "pages:build": "remix vite:build",
+    "build": "node node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts",
+    "pages:build": "node node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts",
     "dev": "node pre-start.cjs && node node_modules/@remix-run/dev/dist/cli.js vite:dev",
     "test": "vitest --run",
     "test:watch": "vitest",

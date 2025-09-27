@@ -9,4 +9,4 @@ send_metrics = false
 route = { pattern = "*", zone_id = "" }
 
 [build]
-command = "npm run pages:build"
+command = "pnpm run pages:build"
