@@ -4,18 +4,6 @@
       "NODE_OPTIONS": "--max-old-space-size=4096"
     }
   },
-  "functions": {
-    "app/entry.server.tsx": {
-      "memory": 1024
-    }
-  },
   "buildCommand": "npm run build:vercel",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "remix",
-  "outputDirectory": "build",
-  "regions": ["iad1"],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "installCommand": "npm install"
 }
