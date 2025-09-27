@@ -16,9 +16,18 @@ export const meta: MetaFunction = () => {
 export async function loader() {
   const GITHUB_TEMPLATE_URL =
     'https://raw.githubusercontent.com/Codelaunch-dev/templates/main/templates.json';
-  const response = await fetch(GITHUB_TEMPLATE_URL);
-  const templates = await response.json();
-  return json(templates);
+  try {
+    const response = await fetch(GITHUB_TEMPLATE_URL);
+    if (!response.ok) {
+      console.error(`Failed to fetch templates: ${response.status} ${response.statusText}`);
+      return json([]);
+    }
+    const templates = await response.json();
+    return json(templates);
+  } catch (error) {
+    console.error('Failed to parse templates JSON:', error);
+    return json([]);
+  }
 }
 
 export default function Index() {
