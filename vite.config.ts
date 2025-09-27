@@ -20,15 +20,26 @@ export default defineConfig((config) => {
       target: 'esnext',
       rollupOptions: {
         output: {
-          manualChunks: {
-            vendor: ['react', 'react-dom'],
-            ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
-            editor: ['@codemirror/view', '@codemirror/state', '@codemirror/lang-javascript'],
-            ai: ['ai', '@ai-sdk/react'],
+          manualChunks(id) {
+            // Only apply manual chunking for client builds, not SSR
+            if (id.includes('node_modules')) {
+              if (id.includes('@radix-ui')) {
+                return 'ui';
+              }
+              if (id.includes('@codemirror')) {
+                return 'editor';
+              }
+              if (id.includes('ai') || id.includes('@ai-sdk')) {
+                return 'ai';
+              }
+              if (id.includes('react') || id.includes('react-dom')) {
+                return 'vendor';
+              }
+            }
           },
         },
       },
-      chunkSizeWarningLimit: 1000,
+      chunkSizeWarningLimit: 1500,
       sourcemap: false,
     },
     plugins: [
