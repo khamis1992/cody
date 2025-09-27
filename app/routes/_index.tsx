@@ -1,28 +1,39 @@
 import { json, type MetaFunction } from '@remix-run/cloudflare';
-import { ClientOnly } from 'remix-utils/client-only';
-import { BaseChat } from '~/components/chat/BaseChat';
+import { useLoaderData } from '@remix-run/react';
 import { Chat } from '~/components/chat/Chat.client';
 import BackgroundRays from '~/components/ui/BackgroundRays';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Code Launch' }, { name: 'description', content: 'Talk with Code Launch, an AI code generation platform' }];
+  return [
+    { title: 'Code Launch' },
+    {
+      name: 'description',
+      content: 'Code Launch, an AI code generation platform',
+    },
+  ];
 };
 
-export const loader = () => json({});
+export async function loader() {
+  const GITHUB_TEMPLATE_URL =
+    'https://raw.githubusercontent.com/Codelaunch-dev/templates/main/templates.json';
+  const response = await fetch(GITHUB_TEMPLATE_URL);
+  const templates = await response.json();
+  return json(templates);
+}
 
-/**
- * Landing page component for Code Launch
- * Note: Settings functionality should ONLY be accessed through the sidebar menu.
- * Do not add settings button/panel to this landing page as it was intentionally removed
- * to keep the UI clean and consistent with the design system.
- */
 export default function Index() {
+  const templates = useLoaderData<typeof loader>();
   return (
-    <div className="flex flex-col min-h-screen h-screen w-full">
+    <main className="relative h-screen">
       <BackgroundRays />
-      <div className="flex-1 overflow-hidden">
-        <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>
+      <div
+        style={{
+          fontFamily: 'system-ui, sans-serif',
+          lineHeight: '1.8',
+        }}
+      >
+        <Chat templates={templates} />
       </div>
-    </div>
+    </main>
   );
 }
