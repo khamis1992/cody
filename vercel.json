@@ -4,11 +4,6 @@
       "NODE_OPTIONS": "--max-old-space-size=4096"
     }
   },
-  "functions": {
-    "app/entry.server.tsx": {
-      "maxDuration": 30
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
