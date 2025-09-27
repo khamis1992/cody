@@ -1,4 +1,4 @@
-import { useStore } from '@nanoselect';
+import { useStore } from '@nanostores/react';
 import { supabaseConnection } from '~/lib/stores/supabase';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
