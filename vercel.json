@@ -1,8 +1,12 @@
 {
-  "buildCommand": "npm run vercel-build",
   "build": {
     "env": {
-      "NODE_OPTIONS": "--max-old-space-size=4096"
+      "NODE_OPTIONS": "--max-old-space-size=8192"
+    }
+  },
+  "functions": {
+    "app/entry.server.tsx": {
+      "maxDuration": 30
     }
   },
   "headers": [
