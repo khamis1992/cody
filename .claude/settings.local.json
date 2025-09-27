@@ -12,7 +12,10 @@
       "Bash(git push:*)",
       "WebSearch",
       "WebFetch(domain:stackblitz-labs.github.io)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:thinktank.ottomator.ai)",
+      "Bash(npm run pages:build:*)",
+      "Bash(npm install)"
     ],
     "deny": [],
     "ask": []
