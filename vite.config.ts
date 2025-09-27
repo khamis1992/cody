@@ -18,6 +18,18 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
+            editor: ['@codemirror/view', '@codemirror/state', '@codemirror/lang-javascript'],
+            ai: ['ai', '@ai-sdk/react'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 1000,
+      sourcemap: false,
     },
     plugins: [
       nodePolyfills({
