@@ -1,8 +1,10 @@
 {
   "build": {
     "env": {
-      "NODE_OPTIONS": "--max-old-space-size=4096"
+      "NODE_OPTIONS": "--max-old-space-size=4096",
+      "NPM_FLAGS": "--legacy-peer-deps"
     }
   },
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "npm ci --legacy-peer-deps",
+  "buildCommand": "npm run vercel-build"
 }
