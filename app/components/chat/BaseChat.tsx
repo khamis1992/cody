@@ -573,28 +573,6 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   ))}
                 </div>
 
-                {/* Example Prompts */}
-                <div id="examples" className="relative z-10 text-center mb-8">
-                  <h3 className="text-lg font-medium text-slate-300 mb-4">Popular Examples</h3>
-                  <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto px-4">
-                    {EXAMPLE_PROMPTS.map((prompt, index) => (
-                      <button
-                        key={index}
-                        onClick={(event) => {
-                          if (isStreaming) {
-                            handleStop?.();
-                            return;
-                          }
-                          handleSendMessage?.(event, prompt.text);
-                        }}
-                        className="px-4 py-2 text-xs bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/50 rounded-full text-slate-300 hover:text-white transition-all duration-200 backdrop-blur-sm"
-                      >
-                        {prompt.text}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 {/* ChatBox for initial input when chat hasn't started */}
                 <div className="relative z-10 w-full max-w-4xl mx-auto px-4 mt-16">
                   <ChatBox
