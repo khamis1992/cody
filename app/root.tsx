@@ -8,7 +8,6 @@ import { createHead } from 'remix-island';
 import { useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { ClientOnly } from 'remix-utils/client-only';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -133,20 +132,5 @@ function AppContent() {
 }
 
 export default function App() {
-  return (
-    <ClientOnly>
-      {() => {
-        const [loading, setLoading] = useState(true);
-
-        useEffect(() => {
-          const timer = setTimeout(() => {
-            setLoading(false);
-          }, 2000);
-          return () => clearTimeout(timer);
-        }, []);
-
-        return loading ? <SplashScreen /> : <Outlet />;
-      }}
-    </ClientOnly>
-  );
+  return <AppContent />;
 }

@@ -1,7 +1,7 @@
 import type { AppLoadContext } from '@remix-run/cloudflare';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
-import ReactDOMServer from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
 import { renderHeadToString } from 'remix-island';
 import { Head } from './root';
 import { themeStore } from '~/lib/stores/theme';
@@ -15,8 +15,8 @@ export default async function handleRequest(
 ) {
   // await initializeModelList({});
 
-  // Use renderToString for compatibility since renderToReadableStream is not available in this environment
-  const html = ReactDOMServer.renderToString(<RemixServer context={remixContext} url={request.url} />);
+  // Use renderToString for Cloudflare compatibility
+  const html = renderToString(<RemixServer context={remixContext} url={request.url} />);
   const head = renderHeadToString({ request, remixContext, Head });
 
   const fullHtml = `<!DOCTYPE html><html lang="en" data-theme="${themeStore.value}"><head>${head}</head><body><div id="root" class="w-full h-full">${html}</div></body></html>`;
