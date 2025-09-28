@@ -12,7 +12,7 @@ import { IconButton } from '~/components/ui/IconButton';
 import { toast } from 'react-toastify';
 import { SpeechRecognitionButton } from './SpeechRecognition';
 import { SupabaseConnection } from './SupabaseConnection';
-import { EnhancedExpoModal } from '~/components/workbench/EnhancedExpoModal';
+import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import styles from './BaseChat.module.scss';
 import type { ProviderInfo } from '~/types/model';
 import { ColorSchemeDialog } from '~/components/ui/ColorSchemeDialog';
@@ -121,13 +121,6 @@ What kind of app should we build?"
           >
         <div className="i-ph:paper-plane-tilt-fill text-xl"></div>
           </button>
-
-      <button
-        className="flex-shrink-0 w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center text-white hover:bg-slate-600 transition-colors"
-        onClick={() => props.onColorSchemeDialogOpenChange?.(true)}
-      >
-        <div className="i-ph:palette-fill text-xl"></div>
-      </button>
     </div>
   );
 };

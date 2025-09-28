@@ -5,7 +5,6 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // Load environment variables from multiple files
 dotenv.config({ path: '.env.local' });
@@ -72,7 +71,6 @@ export default defineConfig((config) => {
           v3_lazyRouteDiscovery: true,
         },
       }),
-      // Note: Static copy removed - provider files are TypeScript and handled by normal build process
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),

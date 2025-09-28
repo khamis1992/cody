@@ -8,6 +8,7 @@ import { createHead } from 'remix-island';
 import { useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ClientOnly } from 'remix-utils/client-only';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -15,10 +16,6 @@ import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 
 import 'virtual:uno.css';
 import { SplashScreen } from '~/components/ui/SplashScreen';
-import { SnapshotIntegration } from '~/lib/stores/snapshotIntegration';
-import { openDatabase } from '~/lib/persistence/db';
-import { RestorePrompt } from '~/components/snapshot/RestorePrompt';
-import { projectSnapshotStore } from '~/lib/stores/projectSnapshot';
 
 export const links: LinksFunction = () => [
   {
@@ -91,46 +88,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function AppContent() {
+export default function Root() {
   const [loading, setLoading] = useState(true);
-  const [db, setDb] = useState<IDBDatabase | null>(null);
-  const pendingSnapshot = useStore(projectSnapshotStore.pendingRestoreSnapshot);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
-
-    // Initialize snapshot integration with database
-    const initializeSnapshotIntegration = async () => {
-      try {
-        const database = await openDatabase();
-        setDb(database);
-        SnapshotIntegration.initialize(database);
-      } catch (error) {
-        console.error('Failed to initialize snapshot integration:', error);
-        // Initialize without database if it fails
-        SnapshotIntegration.initialize();
-      }
-    };
-
-    initializeSnapshotIntegration();
-
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <>
-      {loading ? <SplashScreen /> : <Outlet />}
-      <RestorePrompt
-        open={!!pendingSnapshot}
-        onClose={() => projectSnapshotStore.dismissPendingRestore()}
-        db={db || undefined}
-      />
-    </>
-  );
-}
-
-export default function App() {
-  return <AppContent />;
+  return loading ? <SplashScreen /> : <Outlet />;
 }

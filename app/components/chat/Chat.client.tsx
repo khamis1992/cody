@@ -329,7 +329,7 @@ export const ChatImpl = memo(
         // Try automatic fallback to next model
         const fallbackConfig = autoModelSelector.handleApiFailure(provider.name, model, error);
         if (fallbackConfig) {
-          // console.log(`Auto Model Selector: Switching to fallback - ${fallbackConfig.provider.name}:${fallbackConfig.model}`);
+          console.log(`Auto Model Selector: Switching to fallback - ${fallbackConfig.provider.name}:${fallbackConfig.model}`);
 
           // Update provider and model to the fallback
           setProvider(fallbackConfig.provider);
@@ -381,120 +381,67 @@ export const ChatImpl = memo(
         return;
       }
 
-      try {
-        // Check if elements exist before animating
-        const examplesElement = document.getElementById('examples');
-        const introElement = document.getElementById('intro');
-
-        const animations = [];
-
-        if (examplesElement) {
-          animations.push(animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }));
-        }
-
-        if (introElement) {
-          animations.push(animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }));
-        }
-
-        if (animations.length > 0) {
-          await Promise.all(animations);
-        }
-      } catch (error) {
-        console.warn('Animation failed, continuing without animation:', error);
-      }
+      await Promise.all([
+        animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
+        animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
+      ]);
 
       chatStore.setKey('started', true);
+
       setChatStarted(true);
     };
 
     // Helper function to create message parts array from text and images
     const createMessageParts = (text: string, images: string[] = []): Array<TextUIPart | FileUIPart> => {
-      try {
-        // Create an array of properly typed message parts
-        const parts: Array<TextUIPart | FileUIPart> = [
-          {
-            type: 'text',
-            text: text || '',
-          },
-        ];
+      // Create an array of properly typed message parts
+      const parts: Array<TextUIPart | FileUIPart> = [
+        {
+          type: 'text',
+          text,
+        },
+      ];
 
-        // Add image parts if any
-        if (Array.isArray(images)) {
-          images.forEach((imageData) => {
-            try {
-              if (typeof imageData === 'string' && imageData.length > 0) {
-                // Extract correct MIME type from the data URL
-                const mimeType = imageData.split(';')[0]?.split(':')[1] || 'image/jpeg';
+      // Add image parts if any
+      images.forEach((imageData) => {
+        // Extract correct MIME type from the data URL
+        const mimeType = imageData.split(';')[0].split(':')[1] || 'image/jpeg';
 
-                // Create file part according to AI SDK format
-                parts.push({
-                  type: 'file',
-                  mimeType,
-                  data: imageData.replace(/^data:image\/[^;]+;base64,/, ''),
-                });
-              }
-            } catch (error) {
-              console.warn('Error processing image data:', error);
-            }
-          });
-        }
+        // Create file part according to AI SDK format
+        parts.push({
+          type: 'file',
+          mimeType,
+          data: imageData.replace(/^data:image\/[^;]+;base64,/, ''),
+        });
+      });
 
-        return parts;
-      } catch (error) {
-        console.error('Error creating message parts:', error);
-        return [{ type: 'text', text: text || '' }];
-      }
+      return parts;
     };
 
     // Helper function to convert File[] to Attachment[] for AI SDK
     const filesToAttachments = async (files: File[]): Promise<Attachment[] | undefined> => {
-      try {
-        if (!Array.isArray(files) || files.length === 0) {
-          return undefined;
-        }
-
-        const attachments = await Promise.all(
-          files.map(
-            (file) =>
-              new Promise<Attachment>((resolve, reject) => {
-                try {
-                  if (!file || !(file instanceof File)) {
-                    reject(new Error('Invalid file object'));
-                    return;
-                  }
-
-                  const reader = new FileReader();
-
-                  reader.onloadend = () => {
-                    try {
-                      resolve({
-                        name: file.name || 'unknown',
-                        contentType: file.type || 'application/octet-stream',
-                        url: reader.result as string,
-                      });
-                    } catch (error) {
-                      console.warn('Error processing file result:', error);
-                      reject(error);
-                    }
-                  };
-
-                  reader.onerror = () => {
-                    reject(new Error(`Failed to read file: ${file.name}`));
-                  };
-
-                  reader.readAsDataURL(file);
-                } catch (error) {
-                  reject(error);
-                }
-              }),
-          ),
-        );
-
-        return attachments.filter(Boolean); // Filter out any null/undefined results
-      } catch (error) {
-        console.error('Error converting files to attachments:', error);
+      if (files.length === 0) {
         return undefined;
       }
+
+      const attachments = await Promise.all(
+        files.map(
+          (file) =>
+            new Promise<Attachment>((resolve) => {
+              const reader = new FileReader();
+
+              reader.onloadend = () => {
+                resolve({
+                  name: file.name,
+                  contentType: file.type,
+                  url: reader.result as string,
+                });
+              };
+              reader.readAsDataURL(file);
+            }),
+        ),
+      );
+
+      return attachments;
     };
 
     const sendMessage = async (_event: React.UIEvent, messageInput?: string, projectType?: 'web' | 'mobile') => {
@@ -513,17 +460,12 @@ export const ChatImpl = memo(
       let finalMessageContent = messageWithProjectType;
 
       if (selectedElement) {
-        try {
-          console.log('Selected Element:', selectedElement);
+        console.log('Selected Element:', selectedElement);
 
-          const elementInfo = `<div class=\"__boltSelectedElement__\" data-element='${JSON.stringify(
-            selectedElement,
-          )}'>${JSON.stringify(`${selectedElement.displayText || ''}`)}</div>`;
-          finalMessageContent = messageWithProjectType + elementInfo;
-        } catch (error) {
-          console.warn('Error processing selected element:', error);
-          finalMessageContent = messageWithProjectType;
-        }
+        const elementInfo = `<div class=\"__boltSelectedElement__\" data-element='${JSON.stringify(
+          selectedElement,
+        )}'>${JSON.stringify(`${selectedElement.displayText}`)}</div>`;
+        finalMessageContent = messageWithProjectType + elementInfo;
       }
 
       runAnimation();
