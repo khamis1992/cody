@@ -154,8 +154,8 @@
     "shiki": "^1.24.0",
     "tailwind-merge": "^2.2.1",
     "unist-util-visit": "^5.0.0",
-    "uuid": "^9.0.0",
     "use-debounce": "^10.0.4",
+    "uuid": "^9.0.0",
     "vite-plugin-node-polyfills": "^0.22.0",
     "zod": "^3.24.1",
     "zustand": "^5.0.3"
@@ -203,6 +203,7 @@
     "vite": "^5.4.11",
     "vite-plugin-copy": "^0.1.6",
     "vite-plugin-optimize-css-modules": "^1.1.0",
+    "vite-plugin-static-copy": "^3.1.2",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^2.1.7",
     "wrangler": "^3.67.1"
