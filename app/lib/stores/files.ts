@@ -144,13 +144,13 @@ export class FilesStore {
       const lockedFolders = lockedItems.filter((item) => item.isFolder);
 
       if (lockedItems.length === 0) {
-        // logger.info(`No locked items found for chat ID: ${currentChatId}`);
+        logger.info(`No locked items found for chat ID: ${currentChatId}`);
         return;
       }
 
-      // logger.info(
-      //   `Found ${lockedFiles.length} locked files and ${lockedFolders.length} locked folders for chat ID: ${currentChatId}`,
-      // );
+      logger.info(
+        `Found ${lockedFiles.length} locked files and ${lockedFolders.length} locked folders for chat ID: ${currentChatId}`,
+      );
 
       const currentFiles = this.files.get();
       const updates: FileMap = {};
@@ -187,7 +187,7 @@ export class FilesStore {
       }
 
       const endTime = performance.now();
-      // logger.info(`Loaded locked items in ${Math.round(endTime - startTime)}ms`);
+      logger.info(`Loaded locked items in ${Math.round(endTime - startTime)}ms`);
     } catch (error) {
       logger.error('Failed to load locked files from localStorage', error);
     }

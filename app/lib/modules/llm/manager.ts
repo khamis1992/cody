@@ -9,18 +9,16 @@ export class LLMManager {
   private static _instance: LLMManager;
   private _providers: Map<string, BaseProvider> = new Map();
   private _modelList: ModelInfo[] = [];
-  private _env: any = {};
+  private readonly _env: any = {};
 
-  private constructor(env: Record<string, string>) {
+  private constructor(_env: Record<string, string>) {
     this._registerProvidersFromDirectory();
-    this._env = env;
+    this._env = _env;
   }
 
   static getInstance(env: Record<string, string> = {}): LLMManager {
     if (!LLMManager._instance) {
       LLMManager._instance = new LLMManager(env);
-    } else {
-      LLMManager._instance._env = env;
     }
 
     return LLMManager._instance;

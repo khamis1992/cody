@@ -91,7 +91,7 @@ export class AutoModelSelector {
   markConfigAsFailed(provider: string, model: string): void {
     const configKey = `${provider}:${model}`;
     this.failedConfigs.add(configKey);
-    // console.log(`Auto Model Selector: Marked ${configKey} as failed`);
+    console.log(`Auto Model Selector: Marked ${configKey} as failed`);
   }
 
   /**
@@ -128,7 +128,7 @@ export class AutoModelSelector {
     const config = this.getBestFreeModel();
     this.currentConfig = config;
 
-    // console.log(`Auto Model Selector: Selected ${config.provider.name} - ${config.model}`);
+    console.log(`Auto Model Selector: Selected ${config.provider.name} - ${config.model}`);
 
     return {
       provider: config.provider,
@@ -146,7 +146,7 @@ export class AutoModelSelector {
       const nextConfig = this.getBestFreeModel();
       if (nextConfig && (nextConfig.provider.name !== provider || nextConfig.model !== model)) {
         this.currentConfig = nextConfig;
-        // console.log(`Auto Model Selector: Falling back to ${nextConfig.provider.name} - ${nextConfig.model}`);
+        console.log(`Auto Model Selector: Falling back to ${nextConfig.provider.name} - ${nextConfig.model}`);
 
         return {
           provider: nextConfig.provider,
@@ -170,6 +170,6 @@ export class AutoModelSelector {
    */
   resetFailedConfigs(): void {
     this.failedConfigs.clear();
-    // console.log('Auto Model Selector: Reset failed configurations');
+    console.log('Auto Model Selector: Reset failed configurations');
   }
 }

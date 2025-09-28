@@ -329,7 +329,7 @@ export const ChatImpl = memo(
         // Try automatic fallback to next model
         const fallbackConfig = autoModelSelector.handleApiFailure(provider.name, model, error);
         if (fallbackConfig) {
-          // console.log(`Auto Model Selector: Switching to fallback - ${fallbackConfig.provider.name}:${fallbackConfig.model}`);
+          console.log(`Auto Model Selector: Switching to fallback - ${fallbackConfig.provider.name}:${fallbackConfig.model}`);
 
           // Update provider and model to the fallback
           setProvider(fallbackConfig.provider);
