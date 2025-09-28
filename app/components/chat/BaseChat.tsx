@@ -310,6 +310,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       if (sendMessage && pendingMessage) {
         sendMessage({} as React.UIEvent, pendingMessage, appType);
         setPendingMessage(undefined);
+      } else if (sendMessage && !chatStarted) {
+        sendMessage({} as React.UIEvent, 'Start', appType);
       }
     };
 
