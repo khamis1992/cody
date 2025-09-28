@@ -88,15 +88,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function Root() {
-  const [loading, setLoading] = useState(true);
+export default function App() {
+  return (
+    <ClientOnly>
+      {() => {
+        const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+        useEffect(() => {
+          const timer = setTimeout(() => {
+            setLoading(false);
+          }, 2000);
+          return () => clearTimeout(timer);
+        }, []);
 
-  return loading ? <SplashScreen /> : <Outlet />;
+        return loading ? <SplashScreen /> : <Outlet />;
+      }}
+    </ClientOnly>
+  );
 }
