@@ -223,13 +223,35 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
         setIsModelLoading('all');
         fetch('/api/models')
-          .then((response) => response.json())
+          .then(async (response) => {
+            if (!response.ok) {
+              throw new Error(`API returned ${response.status}: ${response.statusText}`);
+            }
+
+            const text = await response.text();
+            if (!text.trim()) {
+              throw new Error('Empty response from API');
+            }
+
+            try {
+              return JSON.parse(text);
+            } catch (parseError) {
+              console.error('Invalid JSON response:', text);
+              throw new Error('Invalid JSON response from API');
+            }
+          })
           .then((data) => {
-            const typedData = data as { modelList: ModelInfo[] };
-            setModelList(typedData.modelList);
+            if (data && data.modelList && Array.isArray(data.modelList)) {
+              setModelList(data.modelList);
+            } else {
+              console.warn('Unexpected API response format:', data);
+              setModelList([]);
+            }
           })
           .catch((error) => {
             console.error('Error fetching model list:', error);
+            // Set empty model list on error to prevent crashes
+            setModelList([]);
           })
           .finally(() => {
             setIsModelLoading(undefined);
@@ -248,10 +270,33 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
       try {
         const response = await fetch(`/api/models/${encodeURIComponent(providerName)}`);
-        const data = await response.json();
-        providerModels = (data as { modelList: ModelInfo[] }).modelList;
+
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}: ${response.statusText}`);
+        }
+
+        const text = await response.text();
+        if (!text.trim()) {
+          throw new Error('Empty response from API');
+        }
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          console.error('Invalid JSON response:', text);
+          throw new Error('Invalid JSON response from API');
+        }
+
+        if (data && data.modelList && Array.isArray(data.modelList)) {
+          providerModels = data.modelList;
+        } else {
+          console.warn('Unexpected API response format for provider:', providerName, data);
+          providerModels = [];
+        }
       } catch (error) {
         console.error('Error loading dynamic models for:', providerName, error);
+        providerModels = [];
       }
 
       // Only update models for the specific provider
