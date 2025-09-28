@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSearchFilter } from '~/lib/hooks/useSearchFilter';
-import { ChatHistoryItem, db, getAll, useChatHistory } from '~/lib/persistence';
+import { db, getAll, useChatHistory, type ChatHistoryItem } from '~/lib/persistence';
 import { classNames } from '~/utils/classNames';
 import { HistoryItem } from '../sidebar/HistoryItem';
 import { binDates } from '../sidebar/date-binning';
