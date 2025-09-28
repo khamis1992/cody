@@ -29,9 +29,6 @@ export default defineConfig((config) => {
               if (id.includes('@codemirror')) {
                 return 'editor';
               }
-              if (id.includes('ai') || id.includes('@ai-sdk')) {
-                return 'ai';
-              }
               if (id.includes('react') || id.includes('react-dom')) {
                 return 'vendor';
               }
