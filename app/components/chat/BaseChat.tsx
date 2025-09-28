@@ -488,21 +488,160 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                     </div>
                   </div>
 
-                  {/* Floating particles */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    {Array.from({ length: 20 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-1 h-1 bg-accent-400 rounded-full animate-pulse-glow opacity-40"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 3}s`,
-                          animationDuration: `${3 + Math.random() * 2}s`
+                  {/* Feature Cards Section - At Bottom */}
+                  <div className="relative z-10 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent pt-12 pb-12">
+                    <div className="max-w-6xl mx-auto px-4 lg:px-8">
+                      {/* Feature Cards - Matching inspiration image */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                        {/* AI-Powered Generation */}
+                        <div className="group relative">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-accent-500 to-accent-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                          <div className="relative bg-slate-800/80 backdrop-blur-sm border border-accent-500/30 rounded-2xl p-8 text-center hover:bg-slate-800/90 transition-all duration-300 glow-border">
+                            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-accent-400 to-accent-600 rounded-2xl flex items-center justify-center">
+                              <span className="text-white text-2xl font-bold">AI</span>
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-3">AI-Powered Generation</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                              Turn natural language into instant code
+                              applications using holistic AI-powered
+                              generation.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Supabase Ready */}
+                        <div className="group relative">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-blue-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                          <div className="relative bg-slate-800/80 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-8 text-center hover:bg-slate-800/90 transition-all duration-300">
+                            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                              <span className="text-white text-xl font-bold">DB</span>
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-3">Supabase Ready</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                              Templates optimized for backend
+                              integration ready for Supabase ecosystem.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* CI/CD Bundles */}
+                        <div className="group relative">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                          <div className="relative bg-slate-800/80 backdrop-blur-sm border border-orange-500/30 rounded-2xl p-8 text-center hover:bg-slate-800/90 transition-all duration-300">
+                            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center">
+                              <span className="text-white text-xl font-bold">CI</span>
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-3">CI/CD Bundles</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                              Al template apps come fully integrated
+                              with automated deployment.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="border-t border-slate-800/50 pt-8">
+                        <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+                          <span>Copyright 180</span>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Sæd</a>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Dæmurcat</a>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Budant</a>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Läamret</a>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Fettinnet</a>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Maärrit</a>
+                          <a href="#" className="hover:text-slate-300 transition-colors">Hollo</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating particles */}
+                <div className="absolute inset-0 pointer-events-none">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-accent-400 rounded-full animate-pulse-glow opacity-40"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                        animationDelay: `${Math.random() * 3}s`,
+                        animationDuration: `${3 + Math.random() * 2}s`
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Example Prompts */}
+                <div id="examples" className="relative z-10 text-center mb-8">
+                  <h3 className="text-lg font-medium text-slate-300 mb-4">Popular Examples</h3>
+                  <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto px-4">
+                    {EXAMPLE_PROMPTS.map((prompt, index) => (
+                      <button
+                        key={index}
+                        onClick={(event) => {
+                          if (isStreaming) {
+                            handleStop?.();
+                            return;
+                          }
+                          handleSendMessage?.(event, prompt.text);
                         }}
-                      />
+                        className="px-4 py-2 text-xs bg-slate-800/60 hover:bg-slate-700/80 border border-slate-700/50 rounded-full text-slate-300 hover:text-white transition-all duration-200 backdrop-blur-sm"
+                      >
+                        {prompt.text}
+                      </button>
                     ))}
                   </div>
+                </div>
+
+                {/* ChatBox for initial input when chat hasn't started */}
+                <div className="relative z-10 w-full max-w-4xl mx-auto px-4 mt-16">
+                  <ChatBox
+                    isModelSettingsCollapsed={isModelSettingsCollapsed}
+                    setIsModelSettingsCollapsed={setIsModelSettingsCollapsed}
+                    provider={provider}
+                    setProvider={setProvider}
+                    providerList={providerList || (PROVIDER_LIST as ProviderInfo[])}
+                    model={model}
+                    setModel={setModel}
+                    modelList={modelList}
+                    apiKeys={apiKeys}
+                    isModelLoading={isModelLoading}
+                    onApiKeysChange={onApiKeysChange}
+                    uploadedFiles={uploadedFiles}
+                    setUploadedFiles={setUploadedFiles}
+                    imageDataList={imageDataList}
+                    setImageDataList={setImageDataList}
+                    textareaRef={textareaRef}
+                    input={input}
+                    handleInputChange={handleInputChange}
+                    handlePaste={handlePaste}
+                    TEXTAREA_MIN_HEIGHT={TEXTAREA_MIN_HEIGHT}
+                    TEXTAREA_MAX_HEIGHT={TEXTAREA_MAX_HEIGHT}
+                    isStreaming={isStreaming}
+                    handleStop={handleStop}
+                    handleSendMessage={handleSendMessage}
+                    enhancingPrompt={enhancingPrompt}
+                    enhancePrompt={enhancePrompt}
+                    isListening={isListening}
+                    startListening={startListening}
+                    stopListening={stopListening}
+                    chatStarted={chatStarted}
+                    exportChat={exportChat}
+                    qrModalOpen={qrModalOpen}
+                    setQrModalOpen={setQrModalOpen}
+                    handleFileUpload={handleFileUpload}
+                    chatMode={chatMode}
+                    setChatMode={setChatMode}
+                    designScheme={designScheme}
+                    setDesignScheme={setDesignScheme}
+                    selectedElement={selectedElement}
+                    setSelectedElement={setSelectedElement}
+                    isColorSchemeDialogOpen={isColorSchemeDialogOpen}
+                    onColorSchemeDialogOpenChange={handleColorSchemeDialogClose}
+                    onColorSchemeSave={handleColorSchemeSave}
+                  />
                 </div>
               </div>
             )}
