@@ -13,6 +13,7 @@ export default async function handleRequest(
   remixContext: any,
   _loadContext: AppLoadContext,
 ) {
+  console.log('ReactDOMServer:', ReactDOMServer);
   const { renderToReadableStream } = ReactDOMServer;
   // await initializeModelList({});
 
