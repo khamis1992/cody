@@ -72,7 +72,14 @@ export default defineConfig((config) => {
           v3_lazyRouteDiscovery: true,
         },
       }),
-      // Note: Static copy removed - provider files are TypeScript and handled by normal build process
+      viteStaticCopy({
+        targets: [
+          {
+            src: 'dist/app/lib/modules/llm/providers/*.js',
+            dest: 'app/lib/modules/llm/providers',
+          },
+        ],
+      }),
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),
