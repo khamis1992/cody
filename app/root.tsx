@@ -134,8 +134,19 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ClientOnly fallback={<SplashScreen />}>
-      <AppContent />
+    <ClientOnly>
+      {() => {
+        const [loading, setLoading] = useState(true);
+
+        useEffect(() => {
+          const timer = setTimeout(() => {
+            setLoading(false);
+          }, 2000);
+          return () => clearTimeout(timer);
+        }, []);
+
+        return loading ? <SplashScreen /> : <Outlet />;
+      }}
     </ClientOnly>
   );
 }
