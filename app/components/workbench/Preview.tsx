@@ -8,6 +8,8 @@ import { PortDropdown } from './PortDropdown';
 import { ScreenshotSelector } from './ScreenshotSelector';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { EnhancedExpoModal } from '~/components/workbench/EnhancedExpoModal';
+import { ElementContextMenu } from './ElementContextMenu';
+import { ElementPropertyEditor } from './ElementPropertyEditor';
 import type { ElementInfo } from './Inspector';
 
 type ResizeSide = 'left' | 'right' | null;
@@ -91,6 +93,10 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
   const [showDeviceFrameInPreview, setShowDeviceFrameInPreview] = useState(false);
   const expoUrl = useStore(expoUrlAtom);
   const [isExpoQrModalOpen, setIsExpoQrModalOpen] = useState(false);
+  const [selectedElement, setSelectedElementState] = useState<ElementInfo | null>(null);
+  const [contextMenuPosition, setContextMenuPosition] = useState<{ x: number; y: number } | null>(null);
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [showPropertyEditor, setShowPropertyEditor] = useState(false);
 
   useEffect(() => {
     if (!activePreview) {
@@ -636,9 +642,10 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
       } else if (event.data.type === 'INSPECTOR_CLICK') {
         const element = event.data.elementInfo;
 
-        navigator.clipboard.writeText(element.displayText).then(() => {
-          setSelectedElement?.(element);
-        });
+        setSelectedElementState(element);
+        setSelectedElement?.(element);
+        setContextMenuPosition({ x: element.rect.x, y: element.rect.y });
+        setShowContextMenu(true);
       }
     };
 
@@ -660,6 +667,39 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
         '*',
       );
     }
+  };
+
+  // Context menu handlers
+  const handleEditElement = (elementInfo: ElementInfo) => {
+    setSelectedElementState(elementInfo);
+    setShowPropertyEditor(true);
+  };
+
+  const handleDuplicateElement = (elementInfo: ElementInfo) => {
+    // TODO: Implement element duplication
+    console.log('Duplicate element:', elementInfo);
+  };
+
+  const handleDeleteElement = (elementInfo: ElementInfo) => {
+    // TODO: Implement element deletion
+    console.log('Delete element:', elementInfo);
+  };
+
+  const handleInspectStyles = (elementInfo: ElementInfo) => {
+    setSelectedElementState(elementInfo);
+    setShowPropertyEditor(true);
+  };
+
+  const handleCopySelector = (elementInfo: ElementInfo) => {
+    const selector = elementInfo.selector || elementInfo.displayText;
+    navigator.clipboard.writeText(selector).then(() => {
+      console.log('Selector copied to clipboard:', selector);
+    });
+  };
+
+  const handleApplyChanges = (elementInfo: ElementInfo, changes: Record<string, string>) => {
+    // TODO: Apply style changes to the actual element in the iframe
+    console.log('Apply changes to element:', elementInfo, changes);
   };
 
   return (
@@ -1046,6 +1086,27 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
           )}
         </div>
       </div>
+
+      {/* Context Menu */}
+      <ElementContextMenu
+        elementInfo={selectedElement}
+        position={contextMenuPosition}
+        isVisible={showContextMenu}
+        onClose={() => setShowContextMenu(false)}
+        onEditElement={handleEditElement}
+        onDuplicateElement={handleDuplicateElement}
+        onDeleteElement={handleDeleteElement}
+        onInspectStyles={handleInspectStyles}
+        onCopySelector={handleCopySelector}
+      />
+
+      {/* Property Editor */}
+      <ElementPropertyEditor
+        elementInfo={selectedElement}
+        isVisible={showPropertyEditor}
+        onClose={() => setShowPropertyEditor(false)}
+        onApplyChanges={handleApplyChanges}
+      />
     </div>
   );
 });
