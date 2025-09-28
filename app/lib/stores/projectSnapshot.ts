@@ -41,17 +41,22 @@ export class ProjectSnapshotStore {
   pendingRestoreSnapshot: WritableAtom<ProjectSnapshot | null> = atom(null);
 
   private autoSaveTimer: NodeJS.Timeout | null = null;
+  private isBrowser: boolean;
 
   constructor() {
-    this.initializeFromStorage();
-    this.setupAutoSave();
-    this.detectPageReload();
+    this.isBrowser = typeof window !== 'undefined';
+    if (this.isBrowser) {
+      this.initializeFromStorage();
+      this.setupAutoSave();
+      this.detectPageReload();
+    }
   }
 
   /**
    * Initialize snapshots from localStorage
    */
   private initializeFromStorage() {
+    if (!this.isBrowser) return;
     try {
       const storedSnapshots = localStorage.getItem('project_snapshots');
       if (storedSnapshots) {
@@ -84,6 +89,7 @@ export class ProjectSnapshotStore {
    * Save snapshots to localStorage
    */
   private saveToStorage() {
+    if (!this.isBrowser) return;
     try {
       const snapshots = this.snapshots.get();
       localStorage.setItem('project_snapshots', JSON.stringify(snapshots));
@@ -97,6 +103,7 @@ export class ProjectSnapshotStore {
    * Setup auto-save functionality
    */
   private setupAutoSave() {
+    if (!this.isBrowser) return;
     // Listen for auto-save settings changes
     this.autoSaveEnabled.subscribe((enabled) => {
       localStorage.setItem('auto_save_enabled', JSON.stringify(enabled));
@@ -157,6 +164,7 @@ export class ProjectSnapshotStore {
    * Detect page reload and offer restoration
    */
   private detectPageReload() {
+    if (!this.isBrowser) return;
     // Check if we have a recent auto-save that could indicate an unexpected reload
     const lastAutoSave = this.lastAutoSave.get();
     const now = Date.now();
@@ -259,7 +267,9 @@ export class ProjectSnapshotStore {
 
       await this.createSnapshot(name, description);
       this.lastAutoSave.set(Date.now());
-      localStorage.setItem('last_auto_save', JSON.stringify(Date.now()));
+      if (this.isBrowser) {
+        localStorage.setItem('last_auto_save', JSON.stringify(Date.now()));
+      }
 
       // Clean up old auto-saves (keep only last 5)
       this.cleanupAutoSaves();
