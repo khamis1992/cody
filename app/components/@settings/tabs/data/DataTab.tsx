@@ -7,6 +7,7 @@ import { useDataOperations } from '~/lib/hooks/useDataOperations';
 import { openDatabase } from '~/lib/persistence/db';
 import { getAllChats, type Chat } from '~/lib/persistence/chats';
 import { DataVisualization } from './DataVisualization';
+import { SnapshotHistory } from '~/components/snapshot/SnapshotHistory';
 import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
 
@@ -705,6 +706,16 @@ export function DataTab() {
             </CardFooter>
           </Card>
         </div>
+      </div>
+
+      {/* Project Snapshots */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">Project Snapshots</h2>
+        <Card>
+          <CardContent className="p-5">
+            <SnapshotHistory db={db || undefined} />
+          </CardContent>
+        </Card>
       </div>
 
       {/* Data Visualization */}
