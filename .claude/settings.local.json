@@ -33,7 +33,8 @@
       "WebFetch(domain:longcat.chat)",
       "WebFetch(domain:openrouter.ai)",
       "Bash(python3 -c \"import json,sys; data=json.load(sys.stdin); [print(m[''''id'''']) for m in data[''''data''''] if m[''''pricing''''][''''prompt'''']==''''0'''' and m[''''pricing''''][''''completion'''']==''''0'''']\")",
-      "WebFetch(domain:developers.cloudflare.com)"
+      "WebFetch(domain:developers.cloudflare.com)",
+      "WebFetch(domain:63ba23e5.cody-a93.pages.dev)"
     ],
     "deny": [],
     "ask": []
