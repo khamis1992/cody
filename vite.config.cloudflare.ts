@@ -39,6 +39,9 @@ export default defineConfig((config) => {
       chunkSizeWarningLimit: 1500,
       sourcemap: false,
     },
+    optimizeDeps: {
+      exclude: ['remix-utils'],
+    },
     plugins: [
       nodePolyfills({
         include: ['buffer', 'process', 'util', 'stream'],
