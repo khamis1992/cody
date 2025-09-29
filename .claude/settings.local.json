@@ -38,7 +38,9 @@
       "Bash(npx wrangler:*)",
       "Bash(pnpm wrangler:*)",
       "WebFetch(domain:cody-a93.pages.dev)",
-      "Bash(pnpm:*)"
+      "Bash(pnpm:*)",
+      "Bash(pkill:*)",
+      "Bash(/bashes)"
     ],
     "deny": [],
     "ask": []
