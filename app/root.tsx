@@ -92,50 +92,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function AppContent() {
+function ClientApp() {
   const [loading, setLoading] = useState(true);
-  const [db, setDb] = useState<IDBDatabase | null>(null);
-  const pendingSnapshot = useStore(projectSnapshotStore.pendingRestoreSnapshot);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
-
-    // Initialize snapshot integration with database
-    const initializeSnapshotIntegration = async () => {
-      try {
-        const database = await openDatabase();
-        setDb(database);
-        SnapshotIntegration.initialize(database);
-      } catch (error) {
-        console.error('Failed to initialize snapshot integration:', error);
-        // Initialize without database if it fails
-        SnapshotIntegration.initialize();
-      }
-    };
-
-    initializeSnapshotIntegration();
-
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <>
-      {loading ? <SplashScreen /> : <Outlet />}
-      <RestorePrompt
-        open={!!pendingSnapshot}
-        onClose={() => projectSnapshotStore.dismissPendingRestore()}
-        db={db || undefined}
-      />
-    </>
-  );
+  return loading ? <SplashScreen /> : <Outlet />;
 }
 
 export default function App() {
   return (
-    <ClientOnly fallback={<SplashScreen />}>
-      <AppContent />
+    <ClientOnly>
+      {() => <ClientApp />}
     </ClientOnly>
   );
 }
