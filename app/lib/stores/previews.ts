@@ -35,34 +35,34 @@ export class PreviewsStore {
     this.isBrowser = typeof window !== 'undefined';
 
     if (this.isBrowser) {
-      this.#broadcastChannel = new BroadcastChannel(PREVIEW_CHANNEL);
-      this.#storageChannel = new BroadcastChannel('storage-sync-channel');
+    this.#broadcastChannel = new BroadcastChannel(PREVIEW_CHANNEL);
+    this.#storageChannel = new BroadcastChannel('storage-sync-channel');
 
-      // Listen for preview updates from other tabs
-      this.#broadcastChannel.onmessage = (event) => {
-        const { type, previewId } = event.data;
+    // Listen for preview updates from other tabs
+    this.#broadcastChannel.onmessage = (event) => {
+      const { type, previewId } = event.data;
 
-        if (type === 'file-change') {
-          const timestamp = event.data.timestamp;
-          const lastUpdate = this.#lastUpdate.get(previewId) || 0;
+      if (type === 'file-change') {
+        const timestamp = event.data.timestamp;
+        const lastUpdate = this.#lastUpdate.get(previewId) || 0;
 
-          if (timestamp > lastUpdate) {
-            this.#lastUpdate.set(previewId, timestamp);
-            this.refreshPreview(previewId);
-          }
+        if (timestamp > lastUpdate) {
+          this.#lastUpdate.set(previewId, timestamp);
+          this.refreshPreview(previewId);
         }
-      };
+      }
+    };
 
-      // Listen for storage sync messages
-      this.#storageChannel.onmessage = (event) => {
-        const { storage, source } = event.data;
+    // Listen for storage sync messages
+    this.#storageChannel.onmessage = (event) => {
+      const { storage, source } = event.data;
 
-        if (storage && source !== this._getTabId()) {
-          this._syncStorage(storage);
-        }
-      };
+      if (storage && source !== this._getTabId()) {
+        this._syncStorage(storage);
+      }
+    };
 
-      // Override localStorage setItem to catch all changes
+    // Override localStorage setItem to catch all changes
       const originalSetItem = localStorage.setItem;
 
       localStorage.setItem = (...args) => {
