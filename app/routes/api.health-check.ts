@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { createHealthCheckEndpoint } from '~/lib/server/monitoring';
+import { createHealthCheckEndpoint } from '~/lib/.server/monitoring';
 
 const healthCheckHandler = createHealthCheckEndpoint();
 

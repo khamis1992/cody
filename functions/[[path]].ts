@@ -48,6 +48,7 @@ export const onRequest: PagesFunction = async (context) => {
       url: context.request.url,
       method: context.request.method,
       timestamp: new Date().toISOString(),
+      errorType: error?.constructor?.name || 'Unknown',
     });
 
     // Return a proper error response instead of throwing
@@ -56,12 +57,19 @@ export const onRequest: PagesFunction = async (context) => {
         error: 'Internal Server Error',
         message: 'An unexpected error occurred',
         timestamp: new Date().toISOString(),
+        requestId: crypto.randomUUID(),
+        details: process.env.NODE_ENV === 'development' ? {
+          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          url: context.request.url,
+          method: context.request.method,
+        } : undefined,
       }),
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache',
+          'X-Error-Source': 'Worker',
         },
       }
     );

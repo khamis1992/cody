@@ -14,8 +14,8 @@ import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import type { DesignScheme } from '~/types/design-scheme';
 import { MCPService } from '~/lib/services/mcpService';
 import { StreamRecoveryManager } from '~/lib/.server/llm/stream-recovery';
-import { validateRequest, validateAndParseJson, createErrorResponse } from '~/lib/server/request-validator';
-import { monitor, withMonitoring } from '~/lib/server/monitoring';
+import { validateRequest, validateAndParseJson, createErrorResponse } from '~/lib/.server/request-validator';
+import { monitor, withMonitoring } from '~/lib/.server/monitoring';
 
 export async function action(args: ActionFunctionArgs) {
   return withMonitoring(chatAction, 'chat-api')(args);
