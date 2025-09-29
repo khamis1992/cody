@@ -42,7 +42,7 @@ export default defineConfig((config) => {
     },
     ssr: {
       noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react'],
-      target: 'webworker',
+      target: 'node',
     },
     plugins: [
       nodePolyfills({
