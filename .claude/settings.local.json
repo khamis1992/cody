@@ -36,7 +36,8 @@
       "WebFetch(domain:developers.cloudflare.com)",
       "WebFetch(domain:63ba23e5.cody-a93.pages.dev)",
       "Bash(npx wrangler:*)",
-      "Bash(pnpm wrangler:*)"
+      "Bash(pnpm wrangler:*)",
+      "WebFetch(domain:cody-a93.pages.dev)"
     ],
     "deny": [],
     "ask": []

@@ -27,7 +27,39 @@ export const onRequest: PagesFunction = async (context) => {
       console.warn('Environment logging error:', envError);
     }
 
-    const serverBuild = (await import('../build/server')) as unknown as ServerBuild;
+    // Import server build with better error handling
+    let serverBuild: ServerBuild;
+    try {
+      serverBuild = (await import('../build/server')) as unknown as ServerBuild;
+      console.log('Server build imported successfully');
+    } catch (importError) {
+      console.error('Failed to import server build:', {
+        message: importError instanceof Error ? importError.message : 'Unknown import error',
+        stack: importError instanceof Error ? importError.stack : undefined,
+      });
+
+      // Return a more specific error for build import failures
+      return new Response(
+        JSON.stringify({
+          error: 'Server Build Import Error',
+          message: 'Failed to load server build - deployment may be incomplete',
+          timestamp: new Date().toISOString(),
+          requestId: crypto.randomUUID(),
+          details: {
+            importError: importError instanceof Error ? importError.message : 'Unknown import error',
+            suggestion: 'Try redeploying the application',
+          },
+        }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+            'X-Error-Source': 'Worker-Import',
+          },
+        }
+      );
+    }
 
     const handler = createPagesFunctionHandler({
       build: serverBuild,
