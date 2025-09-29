@@ -1,10 +1,10 @@
 services:
   app-prod:
-    image: bolt-ai:production
+    image: code-launch:production
     build:
       context: .
       dockerfile: Dockerfile
-      target: bolt-ai-production
+      target: code-launch-production
     ports:
       - '5173:5173'
     env_file: 
@@ -36,9 +36,9 @@ services:
       - production
 
   app-dev:
-    image: bolt-ai:development
+    image: code-launch:development
     build:
-      target: bolt-ai-development
+      target: code-launch-development
     env_file: 
       - '.env'
       - '.env.local'
@@ -78,7 +78,7 @@ services:
     profiles: ['development', 'default']
 
   app-prebuild:
-    image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    image: ghcr.io/khamis1992/cody:latest
     ports:
       - '5173:5173'
     environment:

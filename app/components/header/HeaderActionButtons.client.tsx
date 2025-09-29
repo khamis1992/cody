@@ -59,7 +59,7 @@ export const HeaderActionButtons = () => {
       >
         <div className="flex flex-col gap-1.5 p-2 min-w-[200px]">
           <SettingsButton onClick={handleSettingsClick} />
-          <HelpButton onClick={() => window.open('https://stackblitz-labs.github.io/bolt.diy/', '_blank')} />
+          <HelpButton onClick={() => window.open('https://docs.codelaunch.dev/', '_blank')} />
         </div>
       </Popover>
 

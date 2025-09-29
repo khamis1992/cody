@@ -1,5 +1,7 @@
 # 🚀 Release v1.0.0
 
+> **Note**: As of this release, this project has been rebranded from "bolt.diy" to "Code Launch". All functionality remains the same, with updated branding and repository references.
+
 ## What's Changed 🌟
 
 ### 🔄 Changes since v0.0.7
