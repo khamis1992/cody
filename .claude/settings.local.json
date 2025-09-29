@@ -30,7 +30,9 @@
       "WebFetch(domain:www.logggos.club)",
       "WebFetch(domain:www.behance.net)",
       "WebFetch(domain:colorhunt.co)",
-      "WebFetch(domain:longcat.chat)"
+      "WebFetch(domain:longcat.chat)",
+      "WebFetch(domain:openrouter.ai)",
+      "Bash(python3 -c \"import json,sys; data=json.load(sys.stdin); [print(m[''''id'''']) for m in data[''''data''''] if m[''''pricing''''][''''prompt'''']==''''0'''' and m[''''pricing''''][''''completion'''']==''''0'''']\")"
     ],
     "deny": [],
     "ask": []

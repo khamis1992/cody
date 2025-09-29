@@ -16,35 +16,92 @@ export interface AutoModelConfig {
 
 /**
  * Priority list of free models to try in order
- * OpenRouter free models first, then DeepSeek as fallback
+ * 3-Tier System: OpenRouter free models → LongCat → DeepSeek fallback
  */
 export const FREE_MODEL_PRIORITY: AutoModelConfig[] = [
-  // OpenRouter free models (priority 1-10)
+  // Tier 1: OpenRouter free models (priority 1-12)
   {
     provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
-    model: 'deepseek/deepseek-chat',
+    model: 'x-ai/grok-4-fast:free',
     isFree: true,
     priority: 1,
   },
   {
     provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
-    model: 'qwen/qwen-2.5-coder-32b-instruct',
+    model: 'deepseek/deepseek-chat',
     isFree: true,
     priority: 2,
   },
   {
     provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
-    model: 'meta-llama/llama-3.1-8b-instruct:free',
+    model: 'qwen/qwen-2.5-coder-32b-instruct:free',
     isFree: true,
     priority: 3,
   },
   {
     provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
-    model: 'microsoft/phi-3-mini-128k-instruct:free',
+    model: 'meta-llama/llama-3.2-90b-vision-instruct:free',
     isFree: true,
     priority: 4,
   },
-  // Deepseek direct API as fallback (priority 20+)
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'meta-llama/llama-3.1-8b-instruct:free',
+    isFree: true,
+    priority: 5,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'google/gemini-flash-1.5-8b:free',
+    isFree: true,
+    priority: 6,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'microsoft/phi-3-medium-128k-instruct:free',
+    isFree: true,
+    priority: 7,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'microsoft/phi-3-mini-128k-instruct:free',
+    isFree: true,
+    priority: 8,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'mistralai/mistral-7b-instruct:free',
+    isFree: true,
+    priority: 9,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'nousresearch/hermes-2-pro-llama-3-8b:free',
+    isFree: true,
+    priority: 10,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'huggingfaceh4/zephyr-7b-beta:free',
+    isFree: true,
+    priority: 11,
+  },
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'OpenRouter')!,
+    model: 'openchat/openchat-7b:free',
+    isFree: true,
+    priority: 12,
+  },
+
+  // Tier 2: LongCat (priority 15) - 100k free tokens/day, excellent performance
+  {
+    provider: PROVIDER_LIST.find(p => p.name === 'LongCat')!,
+    model: 'longcat-flash-chat',
+    isFree: true, // 100k tokens/day free
+    priority: 15,
+  },
+
+  // Tier 3: DeepSeek direct API as final fallback (priority 20+)
   {
     provider: PROVIDER_LIST.find(p => p.name === 'Deepseek')!,
     model: 'deepseek-chat',
