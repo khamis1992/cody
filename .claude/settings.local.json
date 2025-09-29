@@ -32,7 +32,8 @@
       "WebFetch(domain:colorhunt.co)",
       "WebFetch(domain:longcat.chat)",
       "WebFetch(domain:openrouter.ai)",
-      "Bash(python3 -c \"import json,sys; data=json.load(sys.stdin); [print(m[''''id'''']) for m in data[''''data''''] if m[''''pricing''''][''''prompt'''']==''''0'''' and m[''''pricing''''][''''completion'''']==''''0'''']\")"
+      "Bash(python3 -c \"import json,sys; data=json.load(sys.stdin); [print(m[''''id'''']) for m in data[''''data''''] if m[''''pricing''''][''''prompt'''']==''''0'''' and m[''''pricing''''][''''completion'''']==''''0'''']\")",
+      "WebFetch(domain:developers.cloudflare.com)"
     ],
     "deny": [],
     "ask": []
