@@ -14,9 +14,11 @@ import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import type { DesignScheme } from '~/types/design-scheme';
 import { MCPService } from '~/lib/services/mcpService';
 import { StreamRecoveryManager } from '~/lib/.server/llm/stream-recovery';
+import { validateRequest, validateAndParseJson, createErrorResponse } from '~/lib/server/request-validator';
+import { monitor, withMonitoring } from '~/lib/server/monitoring';
 
 export async function action(args: ActionFunctionArgs) {
-  return chatAction(args);
+  return withMonitoring(chatAction, 'chat-api')(args);
 }
 
 const logger = createScopedLogger('api.chat');
@@ -48,30 +50,72 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     },
   });
 
-  const { messages, files, promptId, contextOptimization, supabase, chatMode, designScheme, maxLLMSteps } =
-    await request.json<{
-      messages: Messages;
-      files: any;
-      promptId?: string;
-      contextOptimization: boolean;
-      chatMode: 'discuss' | 'build';
-      designScheme?: DesignScheme;
-      supabase?: {
-        isConnected: boolean;
-        hasSelectedProject: boolean;
-        credentials?: {
-          anonKey?: string;
-          supabaseUrl?: string;
-        };
-      };
-      maxLLMSteps: number;
-    }>();
+  // Validate request headers and structure
+  const requestValidation = validateRequest(request);
+  if (!requestValidation.isValid) {
+    logger.warn('Request validation failed:', requestValidation.errors);
+    return createErrorResponse(
+      'Invalid request: ' + requestValidation.errors.map(e => e.message).join(', '),
+      400
+    );
+  }
+
+  // Safely parse request body using validation utility
+  const parseResult = await validateAndParseJson(request);
+  if (!parseResult.success) {
+    logger.error('Failed to parse request body:', parseResult.error);
+    return createErrorResponse(parseResult.error || 'Invalid request body', 400);
+  }
+
+  const requestBody = parseResult.data;
+
+  // Validate required fields
+  if (!requestBody.messages || !Array.isArray(requestBody.messages)) {
+    return createErrorResponse(
+      'Invalid request: messages field is required and must be an array',
+      400
+    );
+  }
+
+  if (!requestBody.chatMode || !['discuss', 'build'].includes(requestBody.chatMode)) {
+    return createErrorResponse(
+      'Invalid request: chatMode must be either "discuss" or "build"',
+      400
+    );
+  }
+
+  // Validate messages array is not empty
+  if (requestBody.messages.length === 0) {
+    return createErrorResponse(
+      'Invalid request: messages array cannot be empty',
+      400
+    );
+  }
+
+  const {
+    messages,
+    files,
+    promptId,
+    contextOptimization = false,
+    supabase,
+    chatMode,
+    designScheme,
+    maxLLMSteps = 10
+  } = requestBody;
 
   const cookieHeader = request.headers.get('Cookie');
-  const apiKeys = JSON.parse(parseCookies(cookieHeader || '').apiKeys || '{}');
-  const providerSettings: Record<string, IProviderSetting> = JSON.parse(
-    parseCookies(cookieHeader || '').providers || '{}',
-  );
+
+  let apiKeys: any = {};
+  let providerSettings: Record<string, IProviderSetting> = {};
+
+  try {
+    const cookies = parseCookies(cookieHeader || '');
+    apiKeys = JSON.parse(cookies.apiKeys || '{}');
+    providerSettings = JSON.parse(cookies.providers || '{}');
+  } catch (cookieError) {
+    logger.warn('Failed to parse cookies, using defaults:', cookieError);
+    // Continue with empty defaults - this is not a fatal error
+  }
 
   const stream = new SwitchableStream();
 
@@ -428,36 +472,82 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       },
     });
   } catch (error: any) {
-    logger.error(error);
+    // Stop stream recovery if it's running
+    streamRecovery.stop();
+
+    // Record error in monitoring system
+    monitor.recordError(error, {
+      operation: 'chat-api',
+      url: request.url,
+      method: request.method,
+    });
+
+    logger.error('Chat action error:', {
+      message: error.message || 'Unknown error',
+      stack: error.stack,
+      name: error.name,
+      url: request.url,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Determine error type and create appropriate response
+    let statusCode = 500;
+    let message = 'An unexpected error occurred';
+    let isRetryable = true;
+
+    if (error.message?.includes('API key') || error.message?.includes('unauthorized')) {
+      statusCode = 401;
+      message = 'Invalid or missing API key';
+      isRetryable = false;
+    } else if (error.message?.includes('rate limit') || error.message?.includes('429')) {
+      statusCode = 429;
+      message = 'API rate limit exceeded. Please try again later.';
+      isRetryable = true;
+    } else if (error.message?.includes('timeout')) {
+      statusCode = 408;
+      message = 'Request timed out. Please try again.';
+      isRetryable = true;
+    } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+      statusCode = 503;
+      message = 'Network error. Please check your connection and try again.';
+      isRetryable = true;
+    } else if (error.message?.includes('Invalid JSON') || error.message?.includes('parse')) {
+      statusCode = 400;
+      message = 'Invalid request format';
+      isRetryable = false;
+    } else if (error.statusCode) {
+      statusCode = error.statusCode;
+      message = error.message || message;
+    }
 
     const errorResponse = {
       error: true,
-      message: error.message || 'An unexpected error occurred',
-      statusCode: error.statusCode || 500,
-      isRetryable: error.isRetryable !== false, // Default to retryable unless explicitly false
+      message,
+      statusCode,
+      isRetryable,
       provider: error.provider || 'unknown',
+      timestamp: new Date().toISOString(),
     };
 
-    if (error.message?.includes('API key')) {
-      return new Response(
-        JSON.stringify({
-          ...errorResponse,
-          message: 'Invalid or missing API key',
-          statusCode: 401,
-          isRetryable: false,
-        }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-          statusText: 'Unauthorized',
+    // Ensure we return a proper Response object, never throw
+    try {
+      return new Response(JSON.stringify(errorResponse), {
+        status: statusCode,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
         },
+      });
+    } catch (responseError) {
+      // Last resort - return a minimal error response
+      logger.error('Failed to create error response:', responseError);
+      return new Response(
+        '{"error":true,"message":"Internal server error","statusCode":500}',
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
       );
     }
-
-    return new Response(JSON.stringify(errorResponse), {
-      status: errorResponse.statusCode,
-      headers: { 'Content-Type': 'application/json' },
-      statusText: 'Error',
-    });
   }
 }
