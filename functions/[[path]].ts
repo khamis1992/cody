@@ -1,16 +1,15 @@
 import type { ServerBuild } from '@remix-run/cloudflare';
 import { createPagesFunctionHandler } from '@remix-run/cloudflare-pages';
 
-// Import the validation function (will be available after build)
-let validateCloudflareEnv: any;
-let logEnvironmentStatus: any;
-
-try {
-  const envValidator = await import('../build/server/app/lib/server/env-validator.js');
-  validateCloudflareEnv = envValidator.validateCloudflareEnv;
-  logEnvironmentStatus = envValidator.logEnvironmentStatus;
-} catch (error) {
-  console.warn('Environment validator not available, skipping validation');
+// Simple environment logging function for Workers
+function logEnvironmentStatus(env: any) {
+  console.log('Worker Environment status:', {
+    hasOpenAI: !!env?.OPENAI_API_KEY,
+    hasAnthropic: !!env?.ANTHROPIC_API_KEY,
+    hasGoogle: !!env?.GOOGLE_API_KEY,
+    hasOllama: !!env?.OLLAMA_API_BASE_URL,
+    timestamp: new Date().toISOString(),
+  });
 }
 
 export const onRequest: PagesFunction = async (context) => {
@@ -21,17 +20,11 @@ export const onRequest: PagesFunction = async (context) => {
       timestamp: new Date().toISOString(),
     });
 
-    // Validate environment variables if validator is available
-    if (validateCloudflareEnv && logEnvironmentStatus) {
-      try {
-        logEnvironmentStatus(context.env);
-        const validation = validateCloudflareEnv(context.env);
-        if (!validation.isValid) {
-          console.error('Environment validation failed:', validation.errors);
-        }
-      } catch (envError) {
-        console.warn('Environment validation error:', envError);
-      }
+    // Log environment status for debugging
+    try {
+      logEnvironmentStatus(context.env);
+    } catch (envError) {
+      console.warn('Environment logging error:', envError);
     }
 
     const serverBuild = (await import('../build/server')) as unknown as ServerBuild;
