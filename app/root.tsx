@@ -92,23 +92,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ClientApp() {
-  const [loading, setLoading] = useState(true);
+export default function App() {
+  const [showApp, setShowApp] = useState(false);
 
   useEffect(() => {
+    // This effect runs only on the client
     const timer = setTimeout(() => {
-      setLoading(false);
+      setShowApp(true);
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
-  return loading ? <SplashScreen /> : <Outlet />;
-}
-
-export default function App() {
-  return (
-    <ClientOnly>
-      {() => <ClientApp />}
-    </ClientOnly>
-  );
+  // On the server and initial client render, show the splash screen.
+  // After the effect runs on the client, show the main app.
+  return showApp ? <Outlet /> : <SplashScreen />;
 }
