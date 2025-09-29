@@ -72,19 +72,10 @@ export const Head = createHead(() => (
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
-  const [showApp, setShowApp] = useState(false);
 
   useEffect(() => {
     document.querySelector('html')?.setAttribute('data-theme', theme);
   }, [theme]);
-
-  useEffect(() => {
-    // This effect runs only on the client
-    const timer = setTimeout(() => {
-      setShowApp(true);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <html
@@ -94,7 +85,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Head />
       <body className="h-full w-full">
         <DndProvider backend={HTML5Backend}>
-          {showApp ? children : <SplashScreen />}
+          {children}
         </DndProvider>
         <ScrollRestoration />
         <Scripts />
@@ -104,5 +95,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <ClientOnly fallback={<SplashScreen />}>
+      {() => <Outlet />}
+    </ClientOnly>
+  );
 }
