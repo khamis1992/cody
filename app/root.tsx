@@ -72,28 +72,11 @@ export const Head = createHead(() => (
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
+  const [showApp, setShowApp] = useState(false);
 
   useEffect(() => {
     document.querySelector('html')?.setAttribute('data-theme', theme);
   }, [theme]);
-
-  return (
-    <html
-      lang="en"
-      className="h-full w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
-    >
-      <Head />
-      <body className="h-full w-full">
-        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  );
-}
-
-export default function App() {
-  const [showApp, setShowApp] = useState(false);
 
   useEffect(() => {
     // This effect runs only on the client
@@ -104,8 +87,22 @@ export default function App() {
   }, []);
 
   return (
-    <Layout>
-      {showApp ? <Outlet /> : <SplashScreen />}
-    </Layout>
+    <html
+      lang="en"
+      className="h-full w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+    >
+      <Head />
+      <body className="h-full w-full">
+        <DndProvider backend={HTML5Backend}>
+          {showApp ? children : <SplashScreen />}
+        </DndProvider>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   );
+}
+
+export default function App() {
+  return <Outlet />;
 }
