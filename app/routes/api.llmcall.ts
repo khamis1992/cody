@@ -65,13 +65,16 @@ function validateTokenLimits(modelDetails: ModelInfo, requestedTokens: number): 
 }
 
 async function llmCallAction({ context, request }: ActionFunctionArgs) {
-  const { system, message, model, provider, streamOutput } = await request.json<{
-    system: string;
-    message: string;
-    model: string;
-    provider: ProviderInfo;
-    streamOutput?: boolean;
-  }>();
+  try {
+    console.log('API LLMCall: Starting request');
+    
+    const { system, message, model, provider, streamOutput } = await request.json<{
+      system: string;
+      message: string;
+      model: string;
+      provider: ProviderInfo;
+      streamOutput?: boolean;
+    }>();
 
   const { name: providerName } = provider;
 
@@ -294,5 +297,18 @@ async function llmCallAction({ context, request }: ActionFunctionArgs) {
         statusText: 'Error',
       });
     }
+  } catch (error) {
+    console.error('LLMCall error:', error);
+    return new Response(
+      JSON.stringify({
+        error: true,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        statusCode: 500,
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 }
