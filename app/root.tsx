@@ -103,7 +103,9 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // On the server and initial client render, show the splash screen.
-  // After the effect runs on the client, show the main app.
-  return showApp ? <Outlet /> : <SplashScreen />;
+  return (
+    <Layout>
+      {showApp ? <Outlet /> : <SplashScreen />}
+    </Layout>
+  );
 }
