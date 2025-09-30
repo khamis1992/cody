@@ -84,16 +84,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       lang="en"
       className="h-full w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
       data-theme={theme}
+      suppressHydrationWarning
     >
       <Head />
-      <body className="h-full w-full">
-        <ClientOnly fallback={<div className="h-full w-full">{children}</div>}>
-          {() => (
-            <DndProvider backend={HTML5Backend}>
-              {children}
-            </DndProvider>
-          )}
-        </ClientOnly>
+      <body className="h-full w-full" suppressHydrationWarning>
+        <DndProvider backend={HTML5Backend}>
+          {children}
+        </DndProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
