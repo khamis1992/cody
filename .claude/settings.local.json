@@ -40,7 +40,10 @@
       "WebFetch(domain:cody-a93.pages.dev)",
       "Bash(pnpm:*)",
       "Bash(pkill:*)",
-      "Bash(/bashes)"
+      "Bash(/bashes)",
+      "Bash(cat:*)",
+      "Bash(tee:*)",
+      "Read(//c/Users/khamis/Desktop/**)"
     ],
     "deny": [],
     "ask": []
