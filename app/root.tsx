@@ -83,7 +83,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html
       lang="en"
       className="h-full w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
-      data-theme={theme}
       suppressHydrationWarning
     >
       <Head />
