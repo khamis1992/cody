@@ -4,22 +4,15 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/reac
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
 import { stripIndents } from './utils/stripIndent';
-import { createHead } from 'remix-island';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { ClientOnly } from 'remix-utils/client-only';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
 import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 
 import 'virtual:uno.css';
-import { SplashScreen } from '~/components/ui/SplashScreen';
-import { SnapshotIntegration } from '~/lib/stores/snapshotIntegration';
-import { openDatabase } from '~/lib/persistence/db';
-import { RestorePrompt } from '~/components/snapshot/RestorePrompt';
-import { projectSnapshotStore } from '~/lib/stores/projectSnapshot';
 
 export const links: LinksFunction = () => [
   {
@@ -60,16 +53,6 @@ const inlineThemeCode = stripIndents`
   }
 `;
 
-export const Head = createHead(() => (
-  <>
-    <meta charSet="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <Meta />
-    <Links />
-    <script dangerouslySetInnerHTML={{ __html: inlineThemeCode }} />
-  </>
-));
-
 export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
 
@@ -85,7 +68,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       className="h-full w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
       suppressHydrationWarning
     >
-      <Head />
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+        <script dangerouslySetInnerHTML={{ __html: inlineThemeCode }} />
+      </head>
       <body className="h-full w-full" suppressHydrationWarning>
         <DndProvider backend={HTML5Backend}>
           {children}
