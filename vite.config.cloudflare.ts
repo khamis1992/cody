@@ -75,6 +75,10 @@ export default defineConfig((config) => {
           v3_throwAbortReason: true,
           v3_lazyRouteDiscovery: true,
         },
+        serverModuleFormat: 'esm',
+        buildEnd: async ({ viteConfig }) => {
+          console.log('Remix build completed');
+        },
       }),
       viteStaticCopy({
         targets: [
