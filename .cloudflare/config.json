@@ -1,0 +1,10 @@
+{
+  "build": {
+    "command": "pnpm run build",
+    "output_directory": "build/client"
+  },
+  "deployment": {
+    "preview_branch": "develop",
+    "production_branch": "master"
+  }
+}
