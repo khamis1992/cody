@@ -74,19 +74,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
 
   useEffect(() => {
-    document.querySelector('html')?.setAttribute('data-theme', theme);
+    if (typeof document !== 'undefined') {
+      document.querySelector('html')?.setAttribute('data-theme', theme);
+    }
   }, [theme]);
 
   return (
     <html
       lang="en"
       className="h-full w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+      data-theme={theme}
     >
       <Head />
       <body className="h-full w-full">
-        <DndProvider backend={HTML5Backend}>
-          {children}
-        </DndProvider>
+        <ClientOnly fallback={<div className="h-full w-full">{children}</div>}>
+          {() => (
+            <DndProvider backend={HTML5Backend}>
+              {children}
+            </DndProvider>
+          )}
+        </ClientOnly>
         <ScrollRestoration />
         <Scripts />
       </body>
