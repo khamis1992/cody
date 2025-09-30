@@ -41,19 +41,19 @@ export default defineConfig((config) => {
       sourcemap: false,
     },
     ssr: {
-      noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react'],
+      noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react', 'istextorbinary'],
       target: 'node',
     },
     plugins: [
       nodePolyfills({
-        include: ['buffer', 'process', 'util', 'stream'],
+        include: ['buffer', 'process', 'util', 'stream', 'path'],
         globals: {
           Buffer: true,
           process: true,
           global: true,
         },
         protocolImports: true,
-        exclude: ['child_process', 'fs', 'path'],
+        exclude: ['child_process', 'fs'],
       }),
       {
         name: 'buffer-polyfill',
