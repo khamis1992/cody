@@ -11,7 +11,7 @@
     "email": "maintainers@codelaunch.dev"
   },
   "scripts": {
-    "deploy": "pnpm run build && wrangler pages deploy ./build/client",
+    "deploy": "pnpm run build && wrangler deploy",
     "build": "node node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts",
     "pages:build": "pnpm run build",
     "dev": "node pre-start.cjs && node node_modules/@remix-run/dev/dist/cli.js vite:dev --config vite.config.cloudflare.ts",

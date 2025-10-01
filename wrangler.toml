@@ -1,3 +1,9 @@
-name = "code-launch"
+name = "cody"
 compatibility_date = "2024-09-23"
-pages_build_output_dir = "build/client"
+main = "workers/app.ts"
+
+[site]
+bucket = "./build/client"
+
+# Compatibility flags for Node.js modules
+compatibility_flags = ["nodejs_compat"]
