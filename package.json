@@ -12,7 +12,7 @@
   },
   "scripts": {
     "deploy": "pnpm run build && wrangler deploy",
-    "build": "node node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts",
+    "build": "node node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts && node -e \"const fs = require('fs'); const path = 'build/client/_routes.json'; if (fs.existsSync(path)) fs.unlinkSync(path);\"",
     "pages:build": "pnpm run build",
     "dev": "node pre-start.cjs && node node_modules/@remix-run/dev/dist/cli.js vite:dev --config vite.config.cloudflare.ts",
     "test": "vitest --run",

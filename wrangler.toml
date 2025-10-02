@@ -2,8 +2,8 @@ name = "cody"
 compatibility_date = "2024-09-23"
 main = "workers/app.ts"
 
-[site]
-bucket = "./build/client"
-
 # Compatibility flags for Node.js modules
 compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = "./build/client"
