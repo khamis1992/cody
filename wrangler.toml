@@ -1,9 +1,16 @@
 name = "cody"
 compatibility_date = "2024-09-23"
-main = "workers/app.ts"
+main = "build/server/index.js"
 
+# Serve static assets from build/client
 [site]
 bucket = "./build/client"
 
 # Compatibility flags for Node.js modules
 compatibility_flags = ["nodejs_compat"]
+
+# Rules for static asset handling
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true
