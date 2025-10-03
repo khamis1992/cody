@@ -1,3 +1,31 @@
 node_modules/
 build/
 .pnpm-store/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Cloudflare deployment files (use dashboard configuration instead)
+wrangler.toml
+wrangler.toml.manual
+functions/
+functions.manual/
+functions.backup/
+
+# Deployment logs
+*.log
+*.4f19ea4e-9382-4b76-8fb5-066c9e765e67.log
+
+# Editor directories
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
