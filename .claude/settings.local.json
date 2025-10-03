@@ -1,7 +1,29 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(wrangler:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(pnpm run:*)",
+      "Bash(git pull:*)",
+      "Bash(curl:*)",
+      "Bash(/dev/null)",
+      "Read(//c/Users/khamis/Desktop/**)",
+      "Bash(pnpm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(tasklist)",
+      "Bash(findstr:*)",
+      "Bash(dir build)",
+      "Bash(dir:*)",
+      "Bash(test:*)",
+      "WebFetch(domain:thinktank.ottomator.ai)",
+      "Bash(git rm:*)",
+      "Bash(git push:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
