@@ -33,16 +33,28 @@ export default defineConfig((config) => {
               if (id.includes('react') || id.includes('react-dom')) {
                 return 'vendor';
               }
+              if (id.includes('ai') || id.includes('@ai-sdk')) {
+                return 'ai';
+              }
+              if (id.includes('framer-motion')) {
+                return 'animations';
+              }
+              if (id.includes('@webcontainer')) {
+                return 'webcontainer';
+              }
+              if (id.includes('@xterm')) {
+                return 'terminal';
+              }
             }
           },
         },
       },
-      chunkSizeWarningLimit: 1500,
+      chunkSizeWarningLimit: 2000,
       sourcemap: false,
     },
     ssr: {
       noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react'],
-      target: 'webworker',
+      target: 'node',
     },
     plugins: [
       nodePolyfills({
