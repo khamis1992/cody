@@ -1,11 +1,10 @@
-import { vitePlugin as remixVitePlugin } from '@remix-run/dev';
+import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // Load environment variables from multiple files
 dotenv.config({ path: '.env.local' });
@@ -52,9 +51,10 @@ export default defineConfig((config) => {
       chunkSizeWarningLimit: 2000,
       sourcemap: false,
     },
+    // SSR configuration optimized for Cloudflare Workers
     ssr: {
       noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react'],
-      target: 'node',
+      target: 'webworker', // Changed from 'node' to 'webworker' for Cloudflare Workers compatibility
     },
     plugins: [
       nodePolyfills({
@@ -80,6 +80,8 @@ export default defineConfig((config) => {
           return null;
         },
       },
+      // Cloudflare dev proxy for better local development experience
+      config.mode !== 'test' && remixCloudflareDevProxy(),
       remixVitePlugin({
         future: {
           v3_fetcherPersist: true,
@@ -88,14 +90,15 @@ export default defineConfig((config) => {
           v3_lazyRouteDiscovery: true,
         },
       }),
-      viteStaticCopy({
-        targets: [
-          {
-            src: 'app/lib/modules/llm/providers/*.js',
-            dest: 'app/lib/modules/llm/providers',
-          },
-        ],
-      }),
+      // Static copy disabled - files don't exist or aren't needed for Cloudflare
+      // viteStaticCopy({
+      //   targets: [
+      //     {
+      //       src: 'app/lib/modules/llm/providers/*.js',
+      //       dest: 'app/lib/modules/llm/providers',
+      //     },
+      //   ],
+      // }),
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),
