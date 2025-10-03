@@ -1,4 +1,4 @@
-import { vitePlugin as remixVitePlugin } from '@remix-run/dev';
+import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -21,27 +21,24 @@ export default defineConfig((config) => {
       target: 'esnext',
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            // Only apply manual chunking for client builds, not SSR
-            if (id.includes('node_modules')) {
-              if (id.includes('@radix-ui')) {
-                return 'ui';
-              }
-              if (id.includes('@codemirror')) {
-                return 'editor';
-              }
-              if (id.includes('ai') || id.includes('@ai-sdk')) {
-                return 'ai';
-              }
-              if (id.includes('react') || id.includes('react-dom')) {
-                return 'vendor';
-              }
-            }
-          },
+          format: 'esm',
         },
       },
-      chunkSizeWarningLimit: 1500,
-      sourcemap: false,
+      commonjsOptions: {
+        transformMixedEsModules: true,
+      },
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        define: {
+          global: 'globalThis',
+        },
+      },
+    },
+    resolve: {
+      alias: {
+        buffer: 'vite-plugin-node-polyfills/polyfills/buffer',
+      },
     },
     plugins: [
       nodePolyfills({
@@ -67,6 +64,7 @@ export default defineConfig((config) => {
           return null;
         },
       },
+      config.mode !== 'test' && remixCloudflareDevProxy(),
       remixVitePlugin({
         future: {
           v3_fetcherPersist: true,
