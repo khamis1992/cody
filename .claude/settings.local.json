@@ -25,7 +25,9 @@
       "Bash(cp:*)",
       "Bash(rm:*)",
       "Bash(pnpm list:*)",
-      "Bash(pnpm:*)"
+      "Bash(pnpm:*)",
+      "Bash(npm ls:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
