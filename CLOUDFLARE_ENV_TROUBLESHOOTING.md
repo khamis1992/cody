@@ -106,10 +106,7 @@ If you need it working **right now** while waiting for deployment:
 2. **Start a chat**
 3. **Scroll to model selector**
 4. **Click the blue pencil icon** next to "OpenRouter API Key"
-5. **Paste:**
-   ```
-   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
-   ```
+5. **Paste your API key** from https://openrouter.ai/keys
 6. **Click the green checkmark** ✅
 
 This stores the key in browser cookies and works **immediately** without redeployment.

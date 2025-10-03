@@ -27,7 +27,8 @@
       "Bash(pnpm list:*)",
       "Bash(pnpm:*)",
       "Bash(npm ls:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,9 +1,8 @@
 # OpenRouter API Key Setup Guide
 
-## API Key
-```
-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
-```
+## ⚠️ SECURITY WARNING
+**NEVER** commit your actual API key to this file or any public repository!
+Get your API key from: https://openrouter.ai/keys
 
 ## Setup Methods
 
@@ -12,7 +11,7 @@ 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
 2. Scroll down to the model selector area
 3. Find "OpenRouter API Key" section
 4. Click the blue pencil icon (edit button)
-5. Paste the API key above
+5. Paste your API key from https://openrouter.ai/keys
 6. Click the green checkmark to save
 
 **Storage:** Stored in browser cookies under key "apiKeys"
@@ -26,7 +25,7 @@ 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
 4. Click: **Add variable**
 5. Enter:
    - **Variable name:** `OPEN_ROUTER_API_KEY`
-   - **Value:** `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`
+   - **Value:** `your-actual-api-key-from-openrouter.ai`
 6. Select both:
    - ✅ Production
    - ✅ Preview
@@ -38,9 +37,11 @@ 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
 Create a `.env.local` file in the project root:
 
 ```bash
-# OpenRouter API Key
-OPEN_ROUTER_API_KEY=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
+# OpenRouter API Key (get from https://openrouter.ai/keys)
+OPEN_ROUTER_API_KEY=your-actual-api-key-here
 ```
+
+**⚠️ IMPORTANT:** Never commit `.env.local` to git!
 
 Then restart your local server:
 ```bash
