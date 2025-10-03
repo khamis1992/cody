@@ -11,8 +11,7 @@ export function themeIsDark() {
 
 export const DEFAULT_THEME = 'dark';
 
-// Always initialize with DEFAULT_THEME to avoid hydration mismatch
-export const themeStore = atom<Theme>(DEFAULT_THEME);
+export const themeStore = atom<Theme>(initStore());
 
 function initStore() {
   if (!import.meta.env.SSR) {
@@ -23,25 +22,6 @@ function initStore() {
   }
 
   return DEFAULT_THEME;
-}
-
-// Initialize theme from localStorage after mount to avoid hydration issues
-if (typeof window !== 'undefined') {
-  // Wait for DOM to be ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      const theme = initStore();
-      if (theme !== DEFAULT_THEME) {
-        themeStore.set(theme);
-      }
-    });
-  } else {
-    // DOM is already ready
-    const theme = initStore();
-    if (theme !== DEFAULT_THEME) {
-      themeStore.set(theme);
-    }
-  }
 }
 
 export function toggleTheme() {

@@ -5,7 +5,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
-// vite-plugin-static-copy import removed - not needed
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // Load environment variables from multiple files
 dotenv.config({ path: '.env.local' });
@@ -41,19 +41,19 @@ export default defineConfig((config) => {
       sourcemap: false,
     },
     ssr: {
-      noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react', 'istextorbinary'],
+      noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react'],
       target: 'node',
     },
     plugins: [
       nodePolyfills({
-        include: ['buffer', 'process', 'util', 'stream', 'path'],
+        include: ['buffer', 'process', 'util', 'stream'],
         globals: {
           Buffer: true,
           process: true,
           global: true,
         },
         protocolImports: true,
-        exclude: ['child_process', 'fs'],
+        exclude: ['child_process', 'fs', 'path'],
       }),
       {
         name: 'buffer-polyfill',
@@ -75,12 +75,15 @@ export default defineConfig((config) => {
           v3_throwAbortReason: true,
           v3_lazyRouteDiscovery: true,
         },
-        serverModuleFormat: 'esm',
-        buildEnd: async ({ viteConfig }) => {
-          console.log('Remix build completed');
-        },
       }),
-      // Static copy plugin removed - no .js files to copy
+      viteStaticCopy({
+        targets: [
+          {
+            src: 'app/lib/modules/llm/providers/*.js',
+            dest: 'app/lib/modules/llm/providers',
+          },
+        ],
+      }),
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),

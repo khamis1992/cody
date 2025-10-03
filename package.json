@@ -11,8 +11,8 @@
     "email": "maintainers@codelaunch.dev"
   },
   "scripts": {
-    "deploy": "pnpm run build && wrangler deploy",
-    "build": "node --max-old-space-size=4096 node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts && node -e \"const fs = require('fs'); const path = 'build/client/_routes.json'; if (fs.existsSync(path)) fs.unlinkSync(path);\"",
+    "deploy": "pnpm run build && wrangler pages deploy ./build/client",
+    "build": "node node_modules/@remix-run/dev/dist/cli.js vite:build --config vite.config.cloudflare.ts",
     "pages:build": "pnpm run build",
     "dev": "node pre-start.cjs && node node_modules/@remix-run/dev/dist/cli.js vite:dev --config vite.config.cloudflare.ts",
     "test": "vitest --run",
@@ -196,7 +196,6 @@
     "prettier": "^3.5.3",
     "rimraf": "^4.4.1",
     "sass-embedded": "^1.81.0",
-    "shadcn": "^3.3.1",
     "stream-browserify": "^3.0.0",
     "typescript": "^5.7.2",
     "unified": "^11.0.5",
