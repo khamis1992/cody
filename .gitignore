@@ -7,10 +7,9 @@ build/
 .env.local
 .env.production
 
-# Cloudflare deployment files (use dashboard configuration instead)
-wrangler.toml
+# Cloudflare deployment files
 wrangler.toml.manual
-functions/
+functions/build/
 functions.manual/
 functions.backup/
 
