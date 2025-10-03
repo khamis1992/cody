@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running Cloudflare compatibility checks..."
+
+# Check for Node.js built-in imports
+echo "Checking for Node.js built-in imports..."
+FORBIDDEN_IMPORTS=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$' | xargs grep -l "from '[\"']crypto[\"']\|from '[\"']fs[\"']\|from '[\"']path[\"']\|from '[\"']os[\"']\|from '[\"']child_process[\"']\|from '[\"']http[\"']\|from '[\"']https[\"']\|from '[\"']net[\"']\|from '[\"']stream[\"']\|from '[\"']buffer[\"']\|require('[\"']crypto[\"']\|require('[\"']fs[\"']\|require('[\"']path[\"']" 2>/dev/null || true)
+
+if [ -n "$FORBIDDEN_IMPORTS" ]; then
+  echo "❌ ERROR: Node.js built-in imports detected!"
+  echo ""
+  echo "Files with forbidden imports:"
+  echo "$FORBIDDEN_IMPORTS"
+  echo ""
+  echo "🚫 FORBIDDEN: import crypto from 'crypto'"
+  echo "✅ USE: crypto.subtle (Web Crypto API)"
+  echo ""
+  echo "Read CLOUDFLARE_DEVELOPMENT_RULES.md for details."
+  exit 1
+fi
+
+# Check if wrangler.toml exists
+if [ ! -f "wrangler.toml" ]; then
+  echo "⚠️  WARNING: wrangler.toml not found!"
+  echo "This may cause deployment issues if dependencies need Node.js modules."
+  echo ""
+  read -p "Continue anyway? (y/n) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+  fi
+fi
+
+echo "✅ Cloudflare compatibility checks passed!"

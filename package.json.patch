@@ -1,0 +1,4 @@
+Add this to the "scripts" section of package.json:
+
+"check:cloudflare": "bash scripts/check-cloudflare-compat.sh",
+"precommit": "bash scripts/check-cloudflare-compat.sh"
