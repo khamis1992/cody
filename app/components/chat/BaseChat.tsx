@@ -38,7 +38,6 @@ import { AuthButton } from '~/components/auth/AuthButton';
 import { AppTypeSelector } from '~/components/ui/AppTypeSelector';
 import { Logo } from '~/components/ui/logo';
 import { Link } from '@remix-run/react';
-import { TechStackOrbit } from '~/components/ui/TechStackOrbit';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -470,14 +469,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                           today
                         </span>
                       </h1>
-                      <p className="text-xl text-slate-300 mb-12">
+                      <p className="text-xl text-slate-300 mb-8">
                         Describe your vision. Let AI build it into reality
                       </p>
-
-                      {/* Tech Stack Orbiting Circles */}
-                      <div className="mb-16 flex justify-center">
-                        <TechStackOrbit />
-                      </div>
 
                       {/* App Type Selection */}
                       <AppTypeSelector
