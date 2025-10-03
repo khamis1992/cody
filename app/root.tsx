@@ -84,9 +84,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     >
       <Head />
       <body className="h-full w-full">
-        <DndProvider backend={HTML5Backend}>
-          {children}
-        </DndProvider>
+        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -95,5 +93,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const [showApp, setShowApp] = useState(false);
+
+  useEffect(() => {
+    // This effect runs only on the client
+    const timer = setTimeout(() => {
+      setShowApp(true);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // On the server and initial client render, show the splash screen.
+  // After the effect runs on the client, show the main app.
+  return showApp ? <Outlet /> : <SplashScreen />;
 }

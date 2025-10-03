@@ -52,68 +52,49 @@ export async function loader({
   };
 }): Promise<Response> {
   try {
-    console.log('API Models: Starting request');
-    
-    // Fallback response in case of any issues
-    const fallbackResponse = {
-      modelList: [],
-      providers: [],
-      defaultProvider: null,
-    };
+    const llmManager = LLMManager.getInstance(context.cloudflare?.env);
 
-    try {
-      const llmManager = LLMManager.getInstance(context.cloudflare?.env);
+    // Get client side maintained API keys and provider settings from cookies
+    const cookieHeader = request.headers.get('Cookie');
+    const apiKeys = getApiKeysFromCookie(cookieHeader);
+    const providerSettings = getProviderSettingsFromCookie(cookieHeader);
 
-      // Get client side maintained API keys and provider settings from cookies
-      const cookieHeader = request.headers.get('Cookie');
-      const apiKeys = getApiKeysFromCookie(cookieHeader);
-      const providerSettings = getProviderSettingsFromCookie(cookieHeader);
+    const { providers, defaultProvider } = getProviderInfo(llmManager);
 
-      const { providers, defaultProvider } = getProviderInfo(llmManager);
+    let modelList: ModelInfo[] = [];
 
-  let modelList: ModelInfo[] = [];
+    if (params.provider) {
+      // Only update models for the specific provider
+      const provider = llmManager.getProvider(params.provider);
 
-  if (params.provider) {
-    // Only update models for the specific provider
-    const provider = llmManager.getProvider(params.provider);
-
-    if (provider) {
-      modelList = await llmManager.getModelListFromProvider(provider, {
+      if (provider) {
+        modelList = await llmManager.getModelListFromProvider(provider, {
+          apiKeys,
+          providerSettings,
+          serverEnv: context.cloudflare?.env,
+        });
+      }
+    } else {
+      // Update all models
+      modelList = await llmManager.updateModelList({
         apiKeys,
         providerSettings,
         serverEnv: context.cloudflare?.env,
       });
     }
-  } else {
-    // Update all models
-    modelList = await llmManager.updateModelList({
-      apiKeys,
-      providerSettings,
-      serverEnv: context.cloudflare?.env,
-    });
-  }
 
-      return json<ModelsResponse>({
-        modelList,
-        providers,
-        defaultProvider,
-      });
-    } catch (llmError) {
-      console.error('LLMManager error:', llmError);
-      return json(fallbackResponse, { status: 200 }); // Return 200 with empty data instead of 500
-    }
+    return json<ModelsResponse>({
+      modelList,
+      providers,
+      defaultProvider,
+    });
   } catch (error) {
     console.error('Failed to fetch model list:', error);
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-    });
     return json(
       {
         modelList: [],
         providers: [],
         defaultProvider: null,
-        error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 },
     );

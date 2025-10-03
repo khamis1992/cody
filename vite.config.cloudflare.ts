@@ -40,10 +40,6 @@ export default defineConfig((config) => {
       chunkSizeWarningLimit: 1500,
       sourcemap: false,
     },
-    ssr: {
-      noExternal: ['@radix-ui/themes', 'nanostores', '@nanostores/react'],
-      target: 'node',
-    },
     plugins: [
       nodePolyfills({
         include: ['buffer', 'process', 'util', 'stream'],
