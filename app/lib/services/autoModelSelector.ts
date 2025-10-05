@@ -176,6 +176,11 @@ export class AutoModelSelector {
         return true;
       }
 
+      // Payment/billing errors
+      if (errorMessage.includes('Payment Required') || errorMessage.includes('402') || errorMessage.includes('insufficient funds') || errorMessage.includes('billing') || errorMessage.includes('quota exceeded')) {
+        return true;
+      }
+
       // Service unavailable
       if (errorMessage.includes('503') || errorMessage.includes('502')) {
         return true;

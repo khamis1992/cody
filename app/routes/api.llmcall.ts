@@ -265,6 +265,30 @@ async function llmCallAction({ context, request }: ActionFunctionArgs) {
         );
       }
 
+      // Handle payment/billing errors
+      if (
+        error instanceof Error &&
+        (error.message?.includes('Payment Required') ||
+          error.message?.includes('402') ||
+          error.message?.includes('insufficient funds') ||
+          error.message?.includes('billing') ||
+          error.message?.includes('quota exceeded'))
+      ) {
+        return new Response(
+          JSON.stringify({
+            ...errorResponse,
+            message: 'Payment Required: Your account has insufficient credits or billing issues. Please check your provider account.',
+            statusCode: 402,
+            isRetryable: false,
+          }),
+          {
+            status: 402,
+            headers: { 'Content-Type': 'application/json' },
+            statusText: 'Payment Required',
+          },
+        );
+      }
+
       // Handle token limit errors with helpful messages
       if (
         error instanceof Error &&

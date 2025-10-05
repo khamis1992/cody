@@ -224,7 +224,11 @@ export const ChatImpl = memo(
         runAnimation();
         append({
           role: 'user',
-          content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
+          content: `[Model: ${model}]
+
+[Provider: ${provider.name}]
+
+${prompt}`,
         });
       }
     }, [model, provider, searchParams]);
@@ -305,6 +309,9 @@ export const ChatImpl = memo(
         if (errorInfo.statusCode === 401 || errorInfo.message.toLowerCase().includes('api key')) {
           errorType = 'authentication';
           title = 'Authentication Error';
+        } else if (errorInfo.statusCode === 402 || errorInfo.message.toLowerCase().includes('payment required') || errorInfo.message.toLowerCase().includes('insufficient funds') || errorInfo.message.toLowerCase().includes('billing')) {
+          errorType = 'quota';
+          title = 'Payment Required';
         } else if (errorInfo.statusCode === 429 || errorInfo.message.toLowerCase().includes('rate limit')) {
           errorType = 'rate_limit';
           title = 'Rate Limit Exceeded';
@@ -551,7 +558,11 @@ export const ChatImpl = memo(
 
             if (temResp) {
               const { assistantMessage, userMessage } = temResp;
-              const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
+              const userMessageText = `[Model: ${model}]
+
+[Provider: ${provider.name}]
+
+${finalMessageContent}`;
 
               setMessages([
                 {
@@ -568,7 +579,11 @@ export const ChatImpl = memo(
                 {
                   id: `3-${new Date().getTime()}`,
                   role: 'user',
-                  content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userMessage}`,
+                  content: `[Model: ${model}]
+
+[Provider: ${provider.name}]
+
+${userMessage}`,
                   annotations: ['hidden'],
                 },
               ]);
@@ -596,7 +611,11 @@ export const ChatImpl = memo(
         }
 
         // If autoSelectTemplate is disabled or template selection failed, proceed with normal message
-        const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
+        const userMessageText = `[Model: ${model}]
+
+[Provider: ${provider.name}]
+
+${finalMessageContent}`;
         const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
         setMessages([
@@ -633,7 +652,11 @@ export const ChatImpl = memo(
 
       if (modifiedFiles !== undefined) {
         const userUpdateArtifact = filesToArtifacts(modifiedFiles, `${Date.now()}`);
-        const messageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userUpdateArtifact}${finalMessageContent}`;
+        const messageText = `[Model: ${model}]
+
+[Provider: ${provider.name}]
+
+${userUpdateArtifact}${finalMessageContent}`;
 
         const attachmentOptions =
           uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
@@ -649,7 +672,11 @@ export const ChatImpl = memo(
 
         workbenchStore.resetAllFileModifications();
       } else {
-        const messageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
+        const messageText = `[Model: ${model}]
+
+[Provider: ${provider.name}]
+
+${finalMessageContent}`;
 
         const attachmentOptions =
           uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;

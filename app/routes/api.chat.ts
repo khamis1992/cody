@@ -129,7 +129,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
   try {
     const mcpService = MCPService.getInstance();
-    const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
+    const totalMessageContent = messages.reduce((acc: string, message: any) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
     let lastChunk: string | undefined = undefined;
@@ -307,7 +307,11 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             processedMessages.push({
               id: generateId(),
               role: 'user',
-              content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
+              content: `[Model: ${model}]
+
+[Provider: ${provider}]
+
+${CONTINUE_PROMPT}`,
             });
 
             const result = await streamText({
@@ -410,6 +414,10 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           return 'Custom error: Invalid or missing API key. Please check your API key configuration.';
         }
 
+        if (errorMessage.includes('Payment Required') || errorMessage.includes('402') || errorMessage.includes('insufficient funds') || errorMessage.includes('billing') || errorMessage.includes('quota exceeded')) {
+          return 'Custom error: Payment Required. Your account has insufficient credits or billing issues. Please check your provider account and billing settings.';
+        }
+
         if (errorMessage.includes('token') && errorMessage.includes('limit')) {
           return 'Custom error: Token limit exceeded. The conversation is too long for the selected model. Try using a model with larger context window or start a new conversation.';
         }
@@ -498,6 +506,10 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     if (error.message?.includes('API key') || error.message?.includes('unauthorized')) {
       statusCode = 401;
       message = 'Invalid or missing API key';
+      isRetryable = false;
+    } else if (error.message?.includes('Payment Required') || error.message?.includes('402') || error.message?.includes('insufficient funds') || error.message?.includes('billing') || error.message?.includes('quota exceeded')) {
+      statusCode = 402;
+      message = 'Payment Required: Your account has insufficient credits or billing issues. Please check your provider account.';
       isRetryable = false;
     } else if (error.message?.includes('rate limit') || error.message?.includes('429')) {
       statusCode = 429;
