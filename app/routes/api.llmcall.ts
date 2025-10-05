@@ -127,6 +127,21 @@ async function llmCallAction({ context, request }: ActionFunctionArgs) {
         });
       }
 
+      // Handle payment/billing errors
+      if (
+        error instanceof Error &&
+        (error.message?.includes('Payment Required') ||
+          error.message?.includes('402') ||
+          error.message?.includes('insufficient funds') ||
+          error.message?.includes('billing') ||
+          error.message?.includes('quota exceeded'))
+      ) {
+        throw new Response('Payment Required: Your account has insufficient credits or billing issues. Please check your provider account.', {
+          status: 402,
+          statusText: 'Payment Required',
+        });
+      }
+
       // Handle token limit errors with helpful messages
       if (
         error instanceof Error &&

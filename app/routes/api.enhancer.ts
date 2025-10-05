@@ -46,7 +46,11 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
         {
           role: 'user',
           content:
-            `[Model: ${model}]\n\n[Provider: ${providerName}]\n\n` +
+            `[Model: ${model}]
+
+[Provider: ${providerName}]
+
+` +
             stripIndents`
             You are a professional prompt engineer specializing in crafting precise, effective prompts.
             Your task is to enhance prompts by making them more specific, actionable, and effective.
@@ -126,6 +130,21 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
       throw new Response('Invalid or missing API key', {
         status: 401,
         statusText: 'Unauthorized',
+      });
+    }
+
+    // Handle payment/billing errors
+    if (
+      error instanceof Error &&
+      (error.message?.includes('Payment Required') ||
+        error.message?.includes('402') ||
+        error.message?.includes('insufficient funds') ||
+        error.message?.includes('billing') ||
+        error.message?.includes('quota exceeded'))
+    ) {
+      throw new Response('Payment Required: Your account has insufficient credits or billing issues. Please check your provider account.', {
+        status: 402,
+        statusText: 'Payment Required',
       });
     }
 
